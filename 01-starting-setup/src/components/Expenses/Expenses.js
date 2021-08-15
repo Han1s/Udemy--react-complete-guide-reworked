@@ -16,9 +16,10 @@ const Expenses = (props) => {
   return (
     <Fragment>
       <Card className='expenses'>\
-      <ExpensesFilter 
-        yearChangeHandler={yearChangeHandler}
-        year={year}/>
+        <ExpensesFilter 
+          yearChangeHandler={yearChangeHandler}
+          year={year}
+        />
         {
           expenses.map((expense, index) => {
             return (
