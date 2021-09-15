@@ -4,6 +4,8 @@ import MoviesList from './components/MoviesList';
 import AddMovie from './components/AddMovie';
 import './App.css';
 
+const FIREBASE_URL = "https://react-http-6a7a1-default-rtdb.europe-west1.firebasedatabase.app/movies.json";
+
 function App() {
   const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -13,22 +15,26 @@ function App() {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch('https://react-http-6a7a1-default-rtdb.europe-west1.firebasedatabase.app/movies.json');
+      const response = await fetch(FIREBASE_URL);
       if (!response.ok) {
         throw new Error('Something went wrong!');
       }
 
       const data = await response.json();
+      console.log(data);
 
-      const transformedMovies = data.results.map((movieData) => {
-        return {
-          id: movieData.episode_id,
-          title: movieData.title,
-          openingText: movieData.opening_crawl,
-          releaseDate: movieData.release_date,
-        };
-      });
-      setMovies(transformedMovies);
+      const loadedMovies = [];
+
+      for (const key in data) {
+        loadedMovies.push({
+          id: key,
+          title: data[key].title,
+          openingText: data[key].openingText,
+          releaseDate: data[key].releaseDate
+        })
+      }
+
+      setMovies(loadedMovies);
     } catch (error) {
       setError(error.message);
     }
@@ -39,8 +45,16 @@ function App() {
     fetchMoviesHandler();
   }, [fetchMoviesHandler]);
 
-  function addMovieHandler(movie) {
-    console.log(movie);
+  async function addMovieHandler(movie) {
+    const response = await fetch(FIREBASE_URL, {
+      method: 'POST',
+      body: JSON.stringify(movie),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    const data = await response.json();
+    console.log(data);
   }
 
   let content = <p>Found no movies.</p>;
