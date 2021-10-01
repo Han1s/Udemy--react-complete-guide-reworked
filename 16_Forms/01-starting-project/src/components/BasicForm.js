@@ -2,32 +2,83 @@ import useMyOwnInput from "../hooks/use-my-own-input";
 
 const BasicForm = (props) => {
   const {
-    value: firstname,
-    touched: firstNameTouched,
+    value: firstName,
     valueIsValid: firstNameIsValid,
     valueHasError: firstNameHasError,
     changeHandler: firstNameChangeHandler,
-    blurHandler: firstNameBlurHandler
+    blurHandler: firstNameBlurHandler,
+    reset: resetFirstName,
   } = useMyOwnInput((firstName) => firstName.trim() !== '');
 
+  const {
+    value: lastName,
+    valueIsValid: lastNameIsValid,
+    valueHasError: lastNameHasError,
+    changeHandler: lastNameChangeHandler,
+    blurHandler: lastNameBlurHandler,
+    reset: resetLastName,
+  } = useMyOwnInput((lastName) => lastName.trim() !== '');
+
+  const {
+    value: email,
+    valueHasError: emailHasError,
+    valueIsValid: emailIsValid,
+    changeHandler: emailChangeHandler,
+    blurHandler: emailBlurHandler,
+    reset: resetEmail,
+  } = useMyOwnInput((email) => email.includes('@'));
+
+  const formIsValid = (firstNameIsValid && lastNameIsValid && emailIsValid);
+
+  const submitHandler = (event) => {
+    event.preventDefault();
+
+    if (!formIsValid) {
+      return;
+    } else {
+      console.log(`${firstName} ${lastName} ${email}`)
+      resetFirstName();
+      resetLastName();
+      resetEmail();
+    }
+  };
+
   return (
-    <form>
+    <form onSubmit={submitHandler}>
       <div className='control-group'>
-        <div className='form-control'>
+        <div className={firstNameHasError ? 'form-control invalid' : 'form-control'}>
           <label htmlFor='name'>First Name</label>
-          <input type='text' id='name' />
+          <input 
+            value={firstName} 
+            onChange={firstNameChangeHandler}
+            onBlur={firstNameBlurHandler}
+            type='text' 
+            id='name' />
+          {firstNameHasError && <p className="error-text">First Name must not be empty.</p>}
         </div>
-        <div className='form-control'>
-          <label htmlFor='name'>Last Name</label>
-          <input type='text' id='name' />
+        <div className={lastNameHasError ? 'form-control invalid' : 'form-control'}>
+          <label htmlFor='lastName'>Last Name</label>
+          <input 
+            type='text' 
+            id='lastName'
+            onChange={lastNameChangeHandler}
+            onBlur={lastNameBlurHandler}
+            value={lastName} />
+          {lastNameHasError && <p className="error-text">Last Name must not be empty.</p>}
         </div>
       </div>
-      <div className='form-control'>
+      <div className={emailHasError ? 'form-control invalid' : 'form-control'}>
         <label htmlFor='email'>E-Mail Address</label>
-        <input type='text' id='name' />
+        <input 
+          type='email' 
+          id='email'
+          value={email}
+          onChange={emailChangeHandler}
+          onBlur={emailBlurHandler} />
+        {emailHasError && <p className="error-text">Email must be valid.</p>}
       </div>
       <div className='form-actions'>
-        <button>Submit</button>
+        <button disabled={!formIsValid}>Submit</button>
       </div>
     </form>
   );

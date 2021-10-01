@@ -15,13 +15,19 @@ const useMyOwnInput = (validate) => {
     setTouched(true);
   }
 
+  const reset = () => {
+    setTouched(false);
+    setValue('');
+  }
+
   return {
     value,
     touched,
     valueIsValid,
     valueHasError,
     changeHandler,
-    blurHandler
+    blurHandler,
+    reset
   }
 }
 
