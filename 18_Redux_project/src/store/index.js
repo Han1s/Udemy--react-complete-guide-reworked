@@ -2,8 +2,10 @@ import { createStore } from 'redux';
 
 const initialState = { counter: 0, showCounter: true };
 
+export const INCREMENT = 'increment';
+
 const counterReducer = (state = initialState, action) => {
-  if (action.type === 'increment') {
+  if (action.type === INCREMENT) {
     // always copy and output news objects, never mutate the old ones
     return {
       counter: state.counter + 1,
