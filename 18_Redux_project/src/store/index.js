@@ -4,6 +4,7 @@ const initialState = { counter: 0, showCounter: true };
 
 const counterReducer = (state = initialState, action) => {
   if (action.type === 'increment') {
+    // always copy and output news objects, never mutate the old ones
     return {
       counter: state.counter + 1,
       showCounter: state.showCounter
