@@ -21,8 +21,6 @@ const counterSlice = createSlice({
   }
 });
 
-export const INCREMENT = 'increment';
-
 // Configure store merges the reducers
 const store = configureStore({
   reducer: counterSlice.reducer
