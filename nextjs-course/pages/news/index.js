@@ -1,8 +1,19 @@
+import Link from 'next/link';
+import { Fragment } from "react";
+
 const NewsPage = () => {
   return (
-    <h1>
-      The News Page
-    </h1>
+    <Fragment>
+      <h1>
+        The News Page
+      </h1>
+      <ul>
+          <Link href='news/whatever'>
+            <li>Next.js is great framework</li>
+          </Link>
+        <li>something else</li>
+      </ul>
+    </Fragment>
   );
 };
 
