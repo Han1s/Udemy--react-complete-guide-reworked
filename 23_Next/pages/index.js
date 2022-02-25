@@ -1,22 +1,6 @@
 import React from 'react';
 import MeetupList from '../components/meetups/MeetupList';
-
-const DUMMY_MEETUPS = [
-  {
-    id: 'm1',
-    title: "A first meetup",
-    image: "https://upload.wikimedia.org/wikipedia/commons/d/d3/Stadtbild_M%C3%BCnchen.jpg",
-    address: "Some address 5, 12345 Some City",
-    description: "This is a first meetup!"
-  },
-  {
-    id: 'm2',
-    title: "A second meetup",
-    image: "https://upload.wikimedia.org/wikipedia/commons/d/d3/Stadtbild_M%C3%BCnchen.jpg",
-    address: "Some address 4, 12345 Some City",
-    description: "This is a second meetup!"
-  }
-];
+import { MongoClient } from 'mongodb';
 
 const HomePage = (props) => {
   return (
@@ -38,11 +22,26 @@ const HomePage = (props) => {
 
 export async function getStaticProps() {
   // The code written here will be server side, it will never executed on the client side.
-  // fetch data from an API or something
-  // always need to return object here
+  const client = await MongoClient.connect('mongodb+srv://honza:8FLv2ItL6TQGi481@cluster0.iewhe.mongodb.net/myFirstDatabase?retryWrites=true&w=majority');
+
+  console.log('awaited client');
+
+  const db = client.db();
+
+  const meetupsCollection = db.collection('meetups');
+
+  const meetups = await meetupsCollection.find().toArray();
+
+  client.close();
+
   return {
     props: {
-      meetups: DUMMY_MEETUPS
+      meetups: meetups.map(meetup => ({
+        title: meetup.title,
+        address: meetup.address,
+        image: meetup.image,
+        id: meetup._id.toString()
+      }))
     },
     // incremental static generation
     revalidate: 10
